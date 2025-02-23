@@ -1,59 +1,72 @@
+import React, { useState } from "react";
 import DateTimePicker from "./DateTimePicker";
-import Button from '@mui/material/Button';
 import InputFileUpload from "./InputFileUpload";
-import Container from '@mui/material/Container';
-import '../../styles/components/Form.css'
-import { Grid2 } from "@mui/material";
-import {Typography} from "@mui/material";
-import Textarea from '@mui/joy/Textarea';
-
-import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import {Grid2} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Textarea from "@mui/joy/Textarea";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 export default function Form() {
+    const [formData, setFormData] = useState({
+        dateTime: "",
+        description: "",
+        files: [],
+    });
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log('submitted');
-    }
+        e.preventDefault();
+        console.log("Form Data:", formData);
+    };
+
     return (
-        <>
-        <Container>
+        <Container maxWidth="md">
+            <Box sx={{ mt: 5 }}>
+                <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
+                    OD Form
+                </Typography>
 
-            <form action="/ODForm" method="POST">
-                <Grid2 container spacing={2} direction={'column'} alignItems={'center'}>
-                    <Grid2>
-                    <Typography variant="h1" gutterBottom>
-                        OD FORM
-                    </Typography>
-                    </Grid2>
-                    <Grid2>
+                <hr style={{ border: "0.1px solid #EEEEEE", marginBottom: "20px" }} />
 
-                        <DateTimePicker />  
-                    </Grid2>
-                    <Grid2>
-                    <Textarea size="lg" name="Size" placeholder="Large" />
-                        {/* <TextField
-                            id="filled-multiline-flexible"
-                            label="Multiline"
-                            multiline
-                            maxRows={4}
-                            variant="filled"
-                            /> */}
-                    </Grid2>
-                    <Grid2>
-                        <button onClick={handleSubmit} id="submitFormButton" variant="contained">Submit</button>
+                <Card sx={{ p: 3, borderRadius: 2, boxShadow: 1 }}>
+                    <CardContent>
+                        <form action="/ODForm" method="POST" onSubmit={handleSubmit}>
+                            <Grid2 container spacing={3} direction="column">
+                                {/* DateTime Picker */}
+                                <Grid2 item>
+                                    <DateTimePicker />
+                                </Grid2>
 
-                    </Grid2>
-                    {/* <Grid2>
-                    <InputFileUpload />
+                                {/* Text Area */}
+                                <Grid2 item>
+                                    <Textarea
+                                        size="md"
+                                        name="description"
+                                        placeholder="Enter description"
+                                        fullWidth
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    />
+                                </Grid2>
 
-                    </Grid2> */}
+                                {/* File Upload */}
+                                <Grid2 item>
+                                    <InputFileUpload />
+                                </Grid2>
 
-                </Grid2>
-            </form>
-
+                                {/* Submit Button */}
+                                <Grid2 item>
+                                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                                        Submit
+                                    </Button>
+                                </Grid2>
+                            </Grid2>
+                        </form>
+                    </CardContent>
+                </Card>
+            </Box>
         </Container>
-    
-        </>
-    )
+    );
 }

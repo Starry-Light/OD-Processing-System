@@ -12,29 +12,33 @@ export default function DateTimePicker () {
       setHours(setMinutes(new Date(), 30), 17),
     );
     return (<>
-    <div>
-
-      <label> Start Date, time</label>
-      <DatePicker
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
-        showTimeSelect
-        minTime={setHours(setMinutes(new Date(), 0), 17)}
-        maxTime={setHours(setMinutes(new Date(), 30), 20)}
-        dateFormat="MMMM d, yyyy h:mm aa"
+    
+    <div style={{ marginBottom: "10px" }}>
+      <label style={{ fontFamily: "Arial" }}>Start Date and Time: </label>
+        <DatePicker
+          selected={startDate}
+          onChange={(date) => setStartDate(date)}
+          showTimeSelect
+          minTime={setHours(setMinutes(new Date(), 0), 17)}
+          maxTime={setHours(setMinutes(new Date(), 30), 20)}
+          dateFormat="MMMM d, yyyy h:mm aa"
+          customInput={<input style={{ width: "250px", padding: "3px", fontSize: "14px" }} />}
       />
     </div>
-      <label> End Date, time</label>
-      <DatePicker
-        selected={endDate}
-        onChange={(date) => setEndDate(date)}
-        showTimeSelect
-        minTime={setHours(setMinutes(new Date(), 0), 17)}
-        maxTime={setHours(setMinutes(new Date(), 30), 20)}
-        dateFormat="MMMM d, yyyy h:mm aa"
+    <div>
+      <label style={{ fontFamily: "Arial" }}>End Date and Time: </label>
+        <DatePicker
+          selected={endDate}
+          onChange={(date) => setEndDate(date)}
+          showTimeSelect
+          minTime={setHours(setMinutes(new Date(), 0), 17)}
+          maxTime={setHours(setMinutes(new Date(), 30), 20)}
+          dateFormat="MMMM d, yyyy h:mm aa"
+          customInput={<input style={{ width: "255.5px", padding: "3px", fontSize: "14px" }} />}
       />
-
+    </div>
       </>
+      
     );
   };
 
