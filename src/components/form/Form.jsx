@@ -10,11 +10,16 @@ import Textarea from '@mui/joy/Textarea';
 import TextField from "@mui/material/TextField";
 
 export default function Form() {
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log('submitted');
+    }
     return (
         <>
         <Container>
 
-            <form action="">
+            <form action="/ODForm" method="POST">
                 <Grid2 container spacing={2} direction={'column'} alignItems={'center'}>
                     <Grid2>
                     <Typography variant="h1" gutterBottom>
@@ -36,13 +41,13 @@ export default function Form() {
                             /> */}
                     </Grid2>
                     <Grid2>
-                        <Button id="submitFormButton" variant="contained">Submit</Button>
+                        <button onClick={handleSubmit} id="submitFormButton" variant="contained">Submit</button>
 
                     </Grid2>
-                    <Grid2>
+                    {/* <Grid2>
                     <InputFileUpload />
 
-                    </Grid2>
+                    </Grid2> */}
 
                 </Grid2>
             </form>
