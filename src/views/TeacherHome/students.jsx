@@ -25,43 +25,51 @@ const teacherSubjects = [
     {
         id: 1,
         subject: 'Mathematics',
-        class: 'CSE-A',
+        class: 'IT - B',
         students: [
             {
                 id: 1,
-                name: 'John Doe',
-                registerNumber: '20CS101',
+                name: 'Nanditha S',
+                registerNumber: '20IT101',
                 odDate: '2024-02-20',
                 reason: 'Technical Symposium',
                 status: 'Approved'
             },
             {
                 id: 2,
-                name: 'Jane Smith',
-                registerNumber: '20CS102',
+                name: 'Mughilan Paul',
+                registerNumber: '20IT102',
                 odDate: '2024-02-21',
                 reason: 'Sports Event',
-                status: 'Approved'
+                status: 'Rejected'
+            },
+            {
+                id: 3,
+                name: 'Nilaa A J',
+                registerNumber: '20IT103',
+                odDate: '2024-02-24',
+                reason: 'Being too cute',
+                status: 'Pending'
             }
         ]
     },
     {
         id: 2,
         subject: 'Mathematics',
-        class: 'CSE-B',
+        class: 'IT - A',
         students: [
             {
                 id: 3,
-                name: 'Alice Johnson',
-                registerNumber: '20CS201',
+                name: 'Irfana',
+                registerNumber: '20IT201',
                 odDate: '2024-02-19',
                 reason: 'Workshop',
                 status: 'Approved'
             },
             {
                 id: 1, // Duplicate entry for John Doe
-                name: 'John Doe',
-                registerNumber: '20CS101',
+                name: 'Irfan',
+                registerNumber: '20IT101',
                 odDate: '2024-02-20',
                 reason: 'Technical Symposium',
                 status: 'Approved'
@@ -110,6 +118,7 @@ const SubjectCard = ({ subject, class: className, students }) => {
                             label={`${uniqueStudents.length} Students`} 
                             color="primary" 
                             size="small"
+                            sx={{ backgroundColor: "#015498" }}
                         />
                         <IconButton 
                             onClick={() => setExpanded(!expanded)}
@@ -142,7 +151,7 @@ const SubjectCard = ({ subject, class: className, students }) => {
                                         <TableCell>
                                             <Chip 
                                                 label={student.status}
-                                                color={student.status === 'Approved' ? 'success' : 'warning'}
+                                                color={student.status === 'Approved' ? 'success' : student.status === 'Rejected' ? 'error' : 'warning'}
                                                 size="small"
                                             />
                                         </TableCell>
@@ -166,7 +175,7 @@ export default function Students() {
                     component="h1" 
                     sx={{ 
                         fontWeight: 600,
-                        color: 'primary.main',
+                        color: '#015498',
                         mb: 3
                     }}
                 >

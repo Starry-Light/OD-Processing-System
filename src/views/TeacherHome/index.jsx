@@ -97,7 +97,7 @@ export default function TeacherHome() {
                         component="h1" 
                         sx={{ 
                             fontWeight: 600,
-                            color: 'primary.main',
+                            color: '#015498',
                             mb: 1
                         }}
                     >
@@ -124,7 +124,7 @@ export default function TeacherHome() {
                                 component="div" 
                                 sx={{ 
                                     fontWeight: 600,
-                                    color: '#1976d2',
+                                    color: '#015498',
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: 1

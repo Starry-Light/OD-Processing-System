@@ -6,10 +6,10 @@ import DatePicker from "react-datepicker";
 
 export default function DateTimePicker () {
     const [startDate, setStartDate] = useState(
-      setHours(setMinutes(new Date(), 30), 17),
+      setHours(setMinutes(new Date(), 0), 8),
     );
     const [endDate, setEndDate] = useState(
-      setHours(setMinutes(new Date(), 30), 17),
+      setHours(setMinutes(new Date(), 0), 8),
     );
     return (<>
     
@@ -18,9 +18,12 @@ export default function DateTimePicker () {
         <DatePicker
           selected={startDate}
           onChange={(date) => setStartDate(date)}
+          maxDate={new Date()}
+          minDate={new Date().setMonth(new Date().getMonth()-1)}
           showTimeSelect
-          minTime={setHours(setMinutes(new Date(), 0), 17)}
-          maxTime={setHours(setMinutes(new Date(), 30), 20)}
+          timeIntervals={15}
+          minTime={setHours(setMinutes(new Date(), 50), 7)}
+          maxTime={setHours(setMinutes(new Date(), 0), 16)}
           dateFormat="MMMM d, yyyy h:mm aa"
           customInput={<input style={{ width: "250px", padding: "3px", fontSize: "14px" }} />}
       />
@@ -30,9 +33,12 @@ export default function DateTimePicker () {
         <DatePicker
           selected={endDate}
           onChange={(date) => setEndDate(date)}
+          maxDate={new Date()}
+          minDate={new Date().setMonth(new Date().getMonth()-1)}
           showTimeSelect
-          minTime={setHours(setMinutes(new Date(), 0), 17)}
-          maxTime={setHours(setMinutes(new Date(), 30), 20)}
+          timeIntervals={15}
+          minTime={setHours(setMinutes(new Date(), 50), 7)}
+          maxTime={setHours(setMinutes(new Date(), 0), 16)}
           dateFormat="MMMM d, yyyy h:mm aa"
           customInput={<input style={{ width: "255.5px", padding: "3px", fontSize: "14px" }} />}
       />

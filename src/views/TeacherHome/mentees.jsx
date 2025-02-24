@@ -17,6 +17,7 @@ import {
     Skeleton
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import PopupReject from '../../components/TeacherCard/RejectPopUp';
 
 // Styled components for better organization
 const InfoLabel = styled(Typography)({
@@ -88,6 +89,9 @@ export default function Mentees() {
     const [requests, setRequests] = useState(initialRequests);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [rejectPopupOpen, setRejectPopupOpen] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState(null);
+
 
     // Function to approve a request
     const handleApprove = (id) => {
@@ -97,11 +101,17 @@ export default function Mentees() {
     };
 
     // Function to reject a request
-    const handleReject = (id) => {
+    const handleReject = (id,reason) => {
         setRequests(requests.map(request => 
-            request.id === id ? { ...request, odSubmissionStatus: 'Rejected' } : request
+            request.id === id ? { ...request, odSubmissionStatus: 'Rejected', rejectionReason: reason } : request
         ));
     };
+
+    const handleRejectClick = (request) => {
+        setSelectedRequest(request);
+        setRejectPopupOpen(true);
+    };
+    
 
     // Function to get the color for the status chip
     const getStatusColor = (status) => {
@@ -141,8 +151,8 @@ export default function Mentees() {
                     component="h1" 
                     sx={{ 
                         fontWeight: 'bold',
-                        color: '#1976d2',
-                        borderBottom: '2px solid #1976d2',
+                        color: '#015498',
+                        borderBottom: '2px solid #015498',
                         paddingBottom: 1,
                         marginBottom: 3
                     }}
@@ -234,7 +244,7 @@ export default function Mentees() {
                                                 <Button 
                                                     variant="contained" 
                                                     color="error" 
-                                                    onClick={() => handleReject(request.id)}
+                                                    onClick={() => handleRejectClick(request)}
                                                     disabled={request.odSubmissionStatus !== 'Pending'}
                                                 >
                                                     Reject
@@ -295,6 +305,10 @@ export default function Mentees() {
                                             <InfoValue>{request.reason}</InfoValue>
                                         </InfoRow>
                                         <InfoRow>
+                                            <InfoLabel>Rejection Reason:</InfoLabel>
+                                            <InfoValue>{request.odSubmissionStatus === 'Rejected' ? request.rejectionReason : '—'}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
                                             <InfoLabel>File:</InfoLabel>
                                             <InfoValue>
                                                 {request.file ? (
@@ -327,6 +341,16 @@ export default function Mentees() {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
+
+            {/* Add the PopupReject component here */}
+            {rejectPopupOpen && (
+            <PopupReject 
+                open={rejectPopupOpen} 
+                onClose={() => setRejectPopupOpen(false)} 
+                request={selectedRequest} 
+                onReject={handleReject}
+            />
+            )}
         </Container>
     );
 }

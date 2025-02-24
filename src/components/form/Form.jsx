@@ -25,7 +25,7 @@ export default function Form() {
     return (
         <Container maxWidth="md">
             <Box sx={{ mt: 5 }}>
-                <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
+                <Typography variant="h4" fontWeight="bold" sx={{color: "#015498"}} gutterBottom>
                     OD Form
                 </Typography>
 
@@ -58,7 +58,7 @@ export default function Form() {
 
                                 {/* Submit Button */}
                                 <Grid2 item>
-                                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                                    <Button type="submit" variant="contained" sx={{ backgroundColor: "#015498" }} fullWidth>
                                         Submit
                                     </Button>
                                 </Grid2>

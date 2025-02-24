@@ -38,6 +38,7 @@ export default function InputFileUpload({ onFilesSelected }) {
         component="label"
         variant="contained"
         startIcon={<CloudUploadIcon />}
+        sx={{ backgroundColor: "#015498" }}
       >
         Upload files
         <VisuallyHiddenInput type="file" multiple onChange={handleFileChange} />
