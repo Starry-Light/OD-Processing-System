@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { 
     Box, 
     Typography, 
@@ -91,6 +93,7 @@ export default function Mentees() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [rejectPopupOpen, setRejectPopupOpen] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
+    const navigate=useNavigate();
 
 
     // Function to approve a request
@@ -145,6 +148,14 @@ export default function Mentees() {
     return (
         <Container maxWidth="xl">
             <Box sx={{ padding: 3 }}>
+                {/* Back button */}
+                <Button 
+                    variant="outlined" 
+                    onClick={() => navigate('/teacher')}
+                    sx={{ mb: 2 , color:'#015498'}}
+                >
+                    Back to Dashboard
+                </Button>
                 {/* Main title for the page */}
                 <Typography 
                     variant="h4" 
@@ -201,11 +212,11 @@ export default function Mentees() {
                                         </InfoRow>
                                         <InfoRow>
                                             <InfoLabel>Start Date:</InfoLabel>
-                                            <InfoValue>{request.startDate}</InfoValue>
+                                            <InfoValue>{request.startDate} {request.startTime}</InfoValue>
                                         </InfoRow>
                                         <InfoRow>
                                             <InfoLabel>End Date:</InfoLabel>
-                                            <InfoValue>{request.endDate}</InfoValue>
+                                            <InfoValue>{request.endDate} {request.endTime}</InfoValue>
                                         </InfoRow>
                                         <InfoRow>
                                             <InfoLabel>Reason:</InfoLabel>
@@ -294,11 +305,11 @@ export default function Mentees() {
                                         </InfoRow>
                                         <InfoRow>
                                             <InfoLabel>Start Date:</InfoLabel>
-                                            <InfoValue>{request.startDate}</InfoValue>
+                                            <InfoValue>{request.startDate} {request.startTime}</InfoValue>
                                         </InfoRow>
                                         <InfoRow>
                                             <InfoLabel>End Date:</InfoLabel>
-                                            <InfoValue>{request.endDate}</InfoValue>
+                                            <InfoValue>{request.endDate} {request.endTime}</InfoValue>
                                         </InfoRow>
                                         <InfoRow>
                                             <InfoLabel>Reason:</InfoLabel>

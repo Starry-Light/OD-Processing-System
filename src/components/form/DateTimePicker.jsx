@@ -2,22 +2,36 @@ import React, { useState } from "react";
 import {setHours, setMinutes} from 'date-fns';
 import 'react-datepicker/dist/react-datepicker.css'
 import DatePicker from "react-datepicker";
+import { Box, Typography, InputBase, Paper } from "@mui/material";
 
-
-export default function DateTimePicker () {
+export default function DateTimePicker ({ onStartDateChange, onEndDateChange }) {
     const [startDate, setStartDate] = useState(
       setHours(setMinutes(new Date(), 0), 8),
     );
     const [endDate, setEndDate] = useState(
       setHours(setMinutes(new Date(), 0), 8),
     );
+    const isNotSunday = (date) => date.getDay() !== 0;
+    const handleStartDateChange = (date) => {
+      setStartDate(date);
+      if (onStartDateChange) {
+        onStartDateChange(date);
+      }
+    };
+  
+    const handleEndDateChange = (date) => {
+      setEndDate(date);
+      if (onEndDateChange) {
+        onEndDateChange(date);
+      }
+    };
     return (<>
     
     <div style={{ marginBottom: "10px" }}>
       <label style={{ fontFamily: "Arial" }}>Start Date and Time: </label>
         <DatePicker
           selected={startDate}
-          onChange={(date) => setStartDate(date)}
+          onChange={handleStartDateChange}
           maxDate={new Date()}
           minDate={new Date().setMonth(new Date().getMonth()-1)}
           showTimeSelect
@@ -26,13 +40,14 @@ export default function DateTimePicker () {
           maxTime={setHours(setMinutes(new Date(), 0), 16)}
           dateFormat="MMMM d, yyyy h:mm aa"
           customInput={<input style={{ width: "250px", padding: "3px", fontSize: "14px" }} />}
+          filterDate={isNotSunday}
       />
     </div>
     <div>
       <label style={{ fontFamily: "Arial" }}>End Date and Time: </label>
         <DatePicker
           selected={endDate}
-          onChange={(date) => setEndDate(date)}
+          onChange={handleEndDateChange}
           maxDate={new Date()}
           minDate={new Date().setMonth(new Date().getMonth()-1)}
           showTimeSelect
@@ -41,6 +56,7 @@ export default function DateTimePicker () {
           maxTime={setHours(setMinutes(new Date(), 0), 16)}
           dateFormat="MMMM d, yyyy h:mm aa"
           customInput={<input style={{ width: "255.5px", padding: "3px", fontSize: "14px" }} />}
+          filterDate={isNotSunday}
       />
     </div>
       </>

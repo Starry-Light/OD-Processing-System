@@ -1,196 +1,379 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { 
     Box, 
     Typography, 
+    Paper, 
     Card, 
     CardContent, 
-    Container, 
+    Button,
+    Chip,
+    Container,
     Grid,
-    Collapse,
-    IconButton,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Chip
+    Snackbar,
+    Alert,
+    Divider,
+    Stack,
+    CircularProgress,
+    Skeleton
 } from '@mui/material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { styled } from '@mui/material/styles';
+import PopupReject from '../../components/TeacherCard/RejectPopUp';
 
-// Sample data for teacher's subjects and classes
-const teacherSubjects = [
+// Styled components for better organization
+const InfoLabel = styled(Typography)({
+    color: '#666',
+    fontSize: '0.9rem',
+    fontWeight: 500,
+    display: 'inline-block',
+    width: '140px'
+});
+
+const InfoValue = styled(Typography)({
+    color: '#333',
+    fontSize: '0.9rem',
+    display: 'inline-block'
+});
+
+const InfoRow = styled(Box)({
+    marginBottom: '8px',
+    display: 'flex',
+    alignItems: 'center'
+});
+
+// Initial data for student requests
+const initialRequests = [
     {
         id: 1,
-        subject: 'Mathematics',
-        class: 'IT - B',
-        students: [
-            {
-                id: 1,
-                name: 'Nanditha S',
-                registerNumber: '20IT101',
-                odDate: '2024-02-20',
-                reason: 'Technical Symposium',
-                status: 'Approved'
-            },
-            {
-                id: 2,
-                name: 'Mughilan Paul',
-                registerNumber: '20IT102',
-                odDate: '2024-02-21',
-                reason: 'Sports Event',
-                status: 'Rejected'
-            },
-            {
-                id: 3,
-                name: 'Nilaa A J',
-                registerNumber: '20IT103',
-                odDate: '2024-02-24',
-                reason: 'Being too cute',
-                status: 'Pending'
-            }
-        ]
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        registerNumber: '123456',
+        odSubmissionDate: '2023-10-01',
+        odSubmissionStatus: 'Pending',
+        startDate: '2023-10-05',
+        endDate: '2023-10-10',
+        reason: 'Family emergency',
+        class: 'Mathematics',
+        mentor: 'Mentorname',
+        file: { name: 'od_request_john_doe.pdf', size: 1500, url: '/path/to/od_request_john_doe.pdf' }
     },
     {
         id: 2,
-        subject: 'Mathematics',
-        class: 'IT - A',
-        students: [
-            {
-                id: 3,
-                name: 'Irfana',
-                registerNumber: '20IT201',
-                odDate: '2024-02-19',
-                reason: 'Workshop',
-                status: 'Approved'
-            },
-            {
-                id: 1, // Duplicate entry for John Doe
-                name: 'Irfan',
-                registerNumber: '20IT101',
-                odDate: '2024-02-20',
-                reason: 'Technical Symposium',
-                status: 'Approved'
-            }
-        ]
+        name: 'Jane Smith',
+        email: 'jane.smith@example.com',
+        registerNumber: '654321',
+        odSubmissionDate: '2023-10-02',
+        odSubmissionStatus: 'Pending',
+        startDate: '2023-10-12',
+        endDate: '2023-10-15',
+        reason: 'Medical appointment',
+        class: 'Science',
+        mentor: 'Mentor2',
+        file: { name: 'od_request_jane_smith.docx', size: 1800, url: '/path/to/od_request_jane_smith.docx' }
+    },
+    {
+        id: 3,
+        name: 'Alice Johnson',
+        email: 'alice.j@example.com',
+        registerNumber: '789012',
+        odSubmissionDate: '2023-10-03',
+        odSubmissionStatus: 'Approved',
+        startDate: '2023-10-15',
+        endDate: '2023-10-18',
+        reason: 'Sports event',
+        class: 'Physics',
+        mentor:'Mentor3',
+        file: { name: 'od_request_alice.pdf', size: 1600, url: '/path/to/od_request_alice.pdf' }
     }
+    // Add more students as needed
 ];
 
-// SubjectCard component to display each subject and its students
-const SubjectCard = ({ subject, class: className, students }) => {
-    const [expanded, setExpanded] = useState(false);
-
-    // Filter unique students based on their register number
-    const uniqueStudents = Array.from(new Set(students.map(student => student.registerNumber)))
-        .map(registerNumber => students.find(student => student.registerNumber === registerNumber));
-
-    return (
-        <Card 
-            variant="outlined" 
-            sx={{ 
-                mb: 2,
-                borderRadius: 2,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                '&:hover': {
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                }
-            }}
-        >
-            <CardContent>
-                <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center',
-                    mb: expanded ? 2 : 0
-                }}>
-                    <Box>
-                        <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-                            {subject}
-                        </Typography>
-                        <Typography color="text.secondary">
-                            Class: {className}
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Chip 
-                            label={`${uniqueStudents.length} Students`} 
-                            color="primary" 
-                            size="small"
-                            sx={{ backgroundColor: "#015498" }}
-                        />
-                        <IconButton 
-                            onClick={() => setExpanded(!expanded)}
-                            aria-label="show more"
-                        >
-                            {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                        </IconButton>
-                    </Box>
-                </Box>
-
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <TableContainer component={Paper} elevation={0}>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Register Number</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>OD Date</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Reason</TableCell>
-                                    <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {uniqueStudents.map((student) => (
-                                    <TableRow key={student.id}>
-                                        <TableCell>{student.name}</TableCell>
-                                        <TableCell>{student.registerNumber}</TableCell>
-                                        <TableCell>{student.odDate}</TableCell>
-                                        <TableCell>{student.reason}</TableCell>
-                                        <TableCell>
-                                            <Chip 
-                                                label={student.status}
-                                                color={student.status === 'Approved' ? 'success' : student.status === 'Rejected' ? 'error' : 'warning'}
-                                                size="small"
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Collapse>
-            </CardContent>
-        </Card>
-    );
-};
-
 export default function Students() {
+    // State to manage requests and snackbar notifications
+    const [requests, setRequests] = useState(initialRequests);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [rejectPopupOpen, setRejectPopupOpen] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const navigate=useNavigate();
+
+
+    // Function to approve a request
+    const handleApprove = (id) => {
+        setRequests(requests.map(request => 
+            request.id === id ? { ...request, odSubmissionStatus: 'Approved' } : request
+        ));
+    };
+
+    // Function to reject a request
+    const handleReject = (id,reason) => {
+        setRequests(requests.map(request => 
+            request.id === id ? { ...request, odSubmissionStatus: 'Rejected', rejectionReason: reason } : request
+        ));
+    };
+
+    const handleRejectClick = (request) => {
+        setSelectedRequest(request);
+        setRejectPopupOpen(true);
+    };
+    
+
+    // Function to get the color for the status chip
+    const getStatusColor = (status) => {
+        switch(status.toLowerCase()) {
+            case 'approved':
+                return 'success';
+            case 'rejected':
+                return 'error';
+            case 'pending':
+                return 'warning';
+            default:
+                return 'default';
+        }
+    };
+
+    // Function to close the snackbar notification
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
+    };
+
+    // Separate requests into pending and completed
+    const pendingRequests = requests.filter(request => request.odSubmissionStatus === 'Pending');
+    const completedRequests = requests.filter(request => request.odSubmissionStatus !== 'Pending');
+
+    // Show notification when the component mounts
+    useEffect(() => {
+        setSnackbarMessage('New submissions are available!');
+        setSnackbarOpen(true);
+    }, []);
+
     return (
-        <Container maxWidth="lg">
-            <Box sx={{ padding: { xs: 2, sm: 3, md: 4 } }}>
+        <Container maxWidth="xl">
+            <Box sx={{ padding: 3 }}>
+                {/* Back button */}
+                <Button 
+                    variant="outlined" 
+                    onClick={() => navigate('/teacher')}
+                    sx={{ mb: 2 , color:'#015498'}}
+                >
+                    Back to Dashboard
+                </Button>
+
+                {/* Main title for the page */}
                 <Typography 
                     variant="h4" 
                     component="h1" 
                     sx={{ 
-                        fontWeight: 600,
+                        fontWeight: 'bold',
                         color: '#015498',
-                        mb: 3
+                        borderBottom: '2px solid #015498',
+                        paddingBottom: 1,
+                        marginBottom: 3
                     }}
                 >
                     Students OD Submissions
                 </Typography>
 
-                {teacherSubjects.map((subjectData) => (
-                    <SubjectCard 
-                        key={subjectData.id}
-                        subject={subjectData.subject}
-                        class={subjectData.class}
-                        students={subjectData.students}
-                    />
-                ))}
+                {/* Display total counts of pending and completed requests */}
+                <Typography variant="subtitle1" color="text.secondary" sx={{ marginBottom: 2 }}>
+                    Total Pending Requests: {pendingRequests.length} | Total Completed Requests: {completedRequests.length}
+                </Typography>
+
+                {/* Pending Requests Section */}
+                <Typography variant="h5" sx={{ marginBottom: 2 }}>
+                    Pending Requests
+                </Typography>
+                <Grid container spacing={3}>
+                    {pendingRequests.map((request) => (
+                        <Grid item xs={12} sm={6} lg={4} key={request.id}>
+                            <Card 
+                                variant="outlined" 
+                                sx={{ 
+                                    borderRadius: 2,
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                    '&:hover': {
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                                    },
+                                    height: '100%' // Ensure all cards have the same height
+                                }}
+                            >
+                                <CardContent sx={{ p: 3 }}>
+                                    <Stack spacing={2}>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{request.name}</Typography>
+                                        <Typography color="textSecondary">{request.email}</Typography>
+                                        <InfoRow>
+                                            <InfoLabel>Register Number:</InfoLabel>
+                                            <InfoValue>{request.registerNumber}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Class:</InfoLabel>
+                                            <InfoValue>{request.class}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Submission Date:</InfoLabel>
+                                            <InfoValue>{request.odSubmissionDate}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Start Date:</InfoLabel>
+                                            <InfoValue>{request.startDate} {request.startTime}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>End Date:</InfoLabel>
+                                            <InfoValue>{request.endDate} {request.endTime}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Reason:</InfoLabel>
+                                            <InfoValue>{request.reason}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Mentor:</InfoLabel>
+                                            <InfoValue>{request.mentor}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>File:</InfoLabel>
+                                            <InfoValue>
+                                                {request.file ? (
+                                                    <a href={request.file.url} target="_blank" rel="noopener noreferrer">
+                                                        {request.file.name} ({(request.file.size / 1024).toFixed(2)} KB)
+                                                    </a>
+                                                ) : (
+                                                    'No file uploaded'
+                                                )}
+                                            </InfoValue>
+                                        </InfoRow>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <Chip 
+                                                label={request.odSubmissionStatus}
+                                                color={getStatusColor(request.odSubmissionStatus)}
+                                                sx={{ 
+                                                    fontWeight: 'bold',
+                                                    fontSize: '0.9rem'
+                                                }}
+                                            />
+                                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                                <Button 
+                                                    variant="contained" 
+                                                    color="success" 
+                                                    onClick={() => handleApprove(request.id)}
+                                                    disabled={request.odSubmissionStatus !== 'Pending'}
+                                                >
+                                                    Approve
+                                                </Button>
+                                                <Button 
+                                                    variant="contained" 
+                                                    color="error" 
+                                                    onClick={() => handleRejectClick(request)}
+                                                    disabled={request.odSubmissionStatus !== 'Pending'}
+                                                >
+                                                    Reject
+                                                </Button>
+                                            </Box>
+                                        </Box>
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+
+                {/* Completed Requests Section */}
+                <Typography variant="h5" sx={{ marginTop: 4, marginBottom: 2 }}>
+                    Completed Requests
+                </Typography>
+                <Grid container spacing={3}>
+                    {completedRequests.map((request) => (
+                        <Grid item xs={12} sm={6} lg={4} key={request.id}>
+                            <Card 
+                                variant="outlined" 
+                                sx={{ 
+                                    borderRadius: 2,
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                    '&:hover': {
+                                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                                    },
+                                    height: '100%' // Ensure all cards have the same height
+                                }}
+                            >
+                                <CardContent sx={{ p: 3 }}>
+                                    <Stack spacing={2}>
+                                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{request.name}</Typography>
+                                        <Typography color="textSecondary">{request.email}</Typography>
+                                        <InfoRow>
+                                            <InfoLabel>Register Number:</InfoLabel>
+                                            <InfoValue>{request.registerNumber}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Class:</InfoLabel>
+                                            <InfoValue>{request.class}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Submission Date:</InfoLabel>
+                                            <InfoValue>{request.odSubmissionDate}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Start Date:</InfoLabel>
+                                            <InfoValue>{request.startDate} {request.startTime}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>End Date:</InfoLabel>
+                                            <InfoValue>{request.endDate} {request.endTime}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Reason:</InfoLabel>
+                                            <InfoValue>{request.reason}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Mentor:</InfoLabel>
+                                            <InfoValue>{request.mentor}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>Rejection Reason:</InfoLabel>
+                                            <InfoValue>{request.odSubmissionStatus === 'Rejected' ? request.rejectionReason : '—'}</InfoValue>
+                                        </InfoRow>
+                                        <InfoRow>
+                                            <InfoLabel>File:</InfoLabel>
+                                            <InfoValue>
+                                                {request.file ? (
+                                                    <a href={request.file.url} target="_blank" rel="noopener noreferrer">
+                                                        {request.file.name} ({(request.file.size / 1024).toFixed(2)} KB)
+                                                    </a>
+                                                ) : (
+                                                    'No file uploaded'
+                                                )}
+                                            </InfoValue>
+                                        </InfoRow>
+                                        <Chip 
+                                            label={request.odSubmissionStatus}
+                                            color={getStatusColor(request.odSubmissionStatus)}
+                                            sx={{ 
+                                                fontWeight: 'bold',
+                                                fontSize: '0.9rem'
+                                            }}
+                                        />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
             </Box>
+
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
+            {/* Add the PopupReject component here */}
+            {rejectPopupOpen && (
+            <PopupReject 
+                open={rejectPopupOpen} 
+                onClose={() => setRejectPopupOpen(false)} 
+                request={selectedRequest} 
+                onReject={handleReject}
+            />
+            )}
         </Container>
     );
-} 
+}

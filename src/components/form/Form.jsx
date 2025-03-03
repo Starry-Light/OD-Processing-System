@@ -9,16 +9,38 @@ import Typography from "@mui/material/Typography";
 import Textarea from "@mui/joy/Textarea";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { BorderColor } from "@mui/icons-material";
+import 'react-datepicker/dist/react-datepicker.css'
 
 export default function Form() {
     const [formData, setFormData] = useState({
-        dateTime: "",
+        startDateTime: null,
+        endDateTime: null,
         description: "",
         files: [],
     });
+    
+    const handleStartDateChange = (date) => {
+        setFormData((prev) => ({ ...prev, startDateTime: date }));
+    };
+
+    const handleEndDateChange = (date) => {
+        setFormData((prev) => ({ ...prev, endDateTime: date }));
+    };
+
+    const handleFileChange = (files) => {
+        setFormData((prev) => ({ ...prev, files }));
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!formData.startDateTime || !formData.endDateTime){
+            alert('Please select date and time');
+        if (formData.files.length === 0){
+            alert('Please upload a file before submitting.');
+        return;
+        }
+        }
         console.log("Form Data:", formData);
     };
 
@@ -37,7 +59,10 @@ export default function Form() {
                             <Grid2 container spacing={3} direction="column">
                                 {/* DateTime Picker */}
                                 <Grid2 item>
-                                    <DateTimePicker />
+                                    <DateTimePicker 
+                                        onStartDateChange={handleStartDateChange} 
+                                        onEndDateChange={handleEndDateChange} 
+                                    />
                                 </Grid2>
 
                                 {/* Text Area */}
@@ -53,7 +78,7 @@ export default function Form() {
 
                                 {/* File Upload */}
                                 <Grid2 item>
-                                    <InputFileUpload />
+                                    <InputFileUpload onFilesSelected={handleFileChange}/>
                                 </Grid2>
 
                                 {/* Submit Button */}

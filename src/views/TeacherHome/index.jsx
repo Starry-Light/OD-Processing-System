@@ -18,7 +18,7 @@ const teacherProfile = {
 };
 
 // Import the initial requests data
-const initialRequests = [
+const menteesinitialRequests = [
     {
         id: 1,
         name: 'John Doe',
@@ -34,6 +34,27 @@ const initialRequests = [
     // ... other requests
 ];
 
+const studentinitialRequests = [
+    {
+        id: 1,
+        name: 'John Doe',
+        odSubmissionStatus: 'Pending',
+        // ... other fields
+    },
+    {
+        id: 2,
+        name: 'Jane Smith',
+        odSubmissionStatus: 'Pending',
+        // ... other fields
+    },
+    {
+        id: 3,
+        name: 'Jane Smith',
+        odSubmissionStatus: 'Pending',
+        // ... other fields
+    }
+    // ... other requests
+];
 // Updated profile section styling
 const ProfileLabel = ({ children }) => (
     <Typography 
@@ -63,7 +84,11 @@ const ProfileValue = ({ children }) => (
 
 export default function TeacherHome() {
     // Get the count of pending requests
-    const pendingCount = initialRequests.filter(
+    const menteespendingCount = menteesinitialRequests.filter(
+        request => request.odSubmissionStatus === 'Pending'
+    ).length;
+
+    const studentpendingCount = studentinitialRequests.filter(
         request => request.odSubmissionStatus === 'Pending'
     ).length;
 
@@ -216,9 +241,27 @@ export default function TeacherHome() {
                                             }}
                                         >
                                             <Box sx={{ position: 'relative', mb: 2 }}>
-                                                {card.id === 1 && pendingCount > 0 && (
+                                                {card.id === 1 && menteespendingCount > 0 && (
                                                     <Badge 
-                                                        badgeContent={pendingCount}
+                                                        badgeContent={menteespendingCount}
+                                                        color="error"
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            top: -8,
+                                                            right: -8,
+                                                            '& .MuiBadge-badge': {
+                                                                fontSize: '0.75rem',
+                                                                height: '22px',
+                                                                minWidth: '22px',
+                                                                borderRadius: '11px',
+                                                                fontWeight: 600
+                                                            }
+                                                        }}
+                                                    />
+                                                )}
+                                                {card.id === 2 && studentpendingCount > 0 && (
+                                                    <Badge 
+                                                        badgeContent={studentpendingCount}
                                                         color="error"
                                                         sx={{
                                                             position: 'absolute',
